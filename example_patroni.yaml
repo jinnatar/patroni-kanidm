@@ -1,0 +1,69 @@
+---
+scope: postgres-dev
+name: pg-dev
+namespace: /
+
+restapi:
+  listen: 0.0.0.0:12348
+  connect_address: 10.0.10.5:12348
+
+consul:
+  url: http://10.0.10.5:8500
+  register_service: true
+  token: root
+
+postgresql:
+  listen: 0.0.0.0:6543
+  connect_address: 10.0.10.5:6543
+  use_unix_socket: true
+  data_dir: /data
+  pgpass: /pg/pgpass
+  authentication:
+    replication:
+      username: repl
+      password: repl_change_me
+    superuser:
+      username: postgres
+      password: postgres_change_me
+  pg_hba:
+    - local all                   all trust
+    - host  replication repl      all md5
+    - host  all         postgres  all md5
+    - host  all         all       all pam
+  shared_preload_libraries: "pg_stat_statements"
+  pg_stat_statements.track: "all"
+
+# The bootstrap portion should be removed after initdb is done
+bootstrap:
+  dcs:
+    ttl: 30
+    loop_wait: 10
+    retry_timeout: 10
+    maximum_lag_on_failover: 1048576
+    postgresql:
+      use_pg_rewind: true
+      use_slots: true
+      parameters:
+        timezone: 'UTC'
+        max_connections: 100
+        shared_preload_libraries: pg_stat_statements
+        shared_buffers: 64MB
+        work_mem: 16MB
+        effective_cache_size: 512MB
+        tcp_keepalives_idle: 300
+
+  method: initdb
+
+  initdb:
+    - encoding: UTF8
+
+  users:
+    postgres:
+      password: postgres_change_me
+      options:
+        - createrole
+        - createdb
+    repl:
+      password: repl_change_me
+      options:
+        - replication

@@ -1,0 +1,5 @@
+auth        sufficient    pam_kanidm.so ignore_unknown_user
+auth        required      pam_deny.so
+
+account    sufficient    pam_kanidm.so ignore_unknown_user
+account    required      pam_deny.so
