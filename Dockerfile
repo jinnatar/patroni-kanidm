@@ -14,7 +14,8 @@ ADD supervisord.conf /etc/supervisord.conf
 RUN rm /etc/pam.d/*
 ADD pam.d /etc/pam.d
 ADD nsswitch.conf /etc/nsswitch.conf
+ADD entrypoint.sh /
 
 #ENV RUST_LOG=kanidm=debug
 
-ENTRYPOINT ["supervisord", "-c", "/etc/supervisord.conf"]
+ENTRYPOINT ["/entrypoint.sh"]
