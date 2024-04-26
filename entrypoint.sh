@@ -16,7 +16,7 @@ PGDATA="${PGDATA:-/data}"
 [[ "$KANIDM_UNIXD_DEBUG" != "false" ]] && export RUST_LOG="kanidm=debug"
 
 if [[ "$KANIDM_PAM_DEBUG" != "false" ]]; then
-	sed -i -e 's/pam_kanidm.so ignore_unknown_user$/pam_kanidm.so ignore_unknown_user,debug/' /etc/pam.d/postgresql
+	sed -i -e 's/pam_kanidm.so ignore_unknown_user$/pam_kanidm.so ignore_unknown_user debug/' /etc/pam.d/postgresql
 fi
 
 mkdir -p /etc/kanidm
